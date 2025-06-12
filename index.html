@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NDLEA Officer ID Card - Print Version</title>
+  <meta name="viewport" content="width=430, initial-scale=1">
+  <style>
+    body {
+      background: #e8eaf6;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .id-card {
+      width: 360px;
+      height: 220px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(30, 124, 50, 0.18);
+      border: 3.5px solid #1e7c32;
+      position: relative;
+      overflow: hidden;
+      page-break-inside: avoid;
+    }
+    @media print {
+      body { background: none; }
+      .id-card {
+        box-shadow: none;
+        margin: 0;
+        -webkit-print-color-adjust: exact;
+      }
+    }
+    /* Microtext Borders */
+    .microtext {
+      position: absolute;
+      font-size: 6px;
+      color: #1e7c32;
+      font-family: 'Arial Narrow', Arial, sans-serif;
+      letter-spacing: 1px;
+      pointer-events: none;
+      opacity: 0.85;
+      z-index: 30;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .microtext-top {
+      top: 3px; left: 15px; right: 15px;
+      text-align: center;
+    }
+    .microtext-bottom {
+      bottom: 3px; left: 15px; right: 15px;
+      text-align: center;
+    }
+    .microtext-left {
+      left: 2px; top: 15px; bottom: 15px;
+      writing-mode: vertical-rl;
+      text-align: left;
+    }
+    .microtext-right {
+      right: 2px; top: 15px; bottom: 15px;
+      writing-mode: vertical-rl;
+      text-align: left;
+    }
+    /* Watermark */
+    .watermark {
+      position: absolute;
+      top: 40px; left: 50%; transform: translateX(-50%);
+      width: 170px; height: 170px;
+      background: url('ndlea_logo.png') center/contain no-repeat;
+      opacity: 0.06;
+      z-index: 9;
+      pointer-events: none;
+      filter: grayscale(1) blur(0.5px);
+    }
+    /* Nigerian Flag Stripes */
+    .flag-stripes {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 22px;
+      z-index: 10;
+      background: repeating-linear-gradient(
+        to right,
+        #1e7c32 0 7.5px,
+        #fff 7.5px 15px,
+        #1e7c32 15px 22px
+      );
+      opacity: 0.96;
+    }
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      background: linear-gradient(90deg, #1e7c32 85%, #fff 100%);
+      padding: 9px 14px 9px 34px;
+      border-bottom: 2px solid #1e7c32;
+      z-index: 20;
+      position: relative;
+    }
+    .logo {
+      width: 43px;
+      height: 43px;
+      margin-right: 10px;
+      border-radius: 7px;
+      background: #fff;
+      border: 2px solid #cfd8dc;
+      z-index: 22;
+    }
+    .header-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .federal-republic {
+      font-size: 0.78rem;
+      color: #fff;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+    }
+    .header-text h1 {
+      margin: 2px 0 2px 0;
+      font-size: 0.99rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+      text-shadow: 0 1px 2px #054d17b0;
+    }
+    .id-type {
+      font-size: 0.82rem;
+      color: #fff;
+      margin-top: 2px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    /* Body */
+    .body-section {
+      display: flex;
+      padding: 10px 10px 8px 28px;
+      background: #fff;
+      position: relative;
+      z-index: 22;
+      height: 95px;
+    }
+    .photo-box {
+      flex: 0 0 74px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      margin-right: 9px;
+    }
+    .photo {
+      width: 61px;
+      height: 77px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 2px solid #1e7c32;
+      background: #e0e0e0;
+      margin-bottom: 4px;
+      box-shadow: 0 2px 7px #1e7c3233;
+    }
+    .barcode {
+      width: 65px;
+      height: 16px;
+      background: #fff;
+      border-radius: 2px;
+      border: 1px solid #bbb;
+      margin-bottom: 2px;
+    }
+    .qr {
+      width: 29px;
+      height: 29px;
+      border: 1px solid #1e7c32;
+      border-radius: 4px;
+      background: #fff;
+      margin: 2px 0 0 0;
+    }
+    .details-box {
+      flex: 1;
+      padding-left: 3px;
+      display: flex;
+      align-items: center;
+    }
+    .details-table {
+      width: 100%;
+      font-size: 0.93rem;
+      color: #222;
+      border-collapse: collapse;
+      background: #fff;
+    }
+    .details-table td {
+      padding: 3px 6px 3px 0;
+      border: none;
+    }
+    .details-table tr td:first-child {
+      font-weight: 700;
+      color: #1e7c32;
+      width: 108px;
+    }
+    /* Signature and Hologram */
+    .signatures {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 5px 11px 1px 27px;
+      background: #fff;
+      border-top: 1.3px solid #e0e0e0;
+      position: relative;
+      z-index: 22;
+    }
+    .sig-box {
+      width: 38%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .sig-line {
+      width: 90%;
+      height: 15px;
+      border-bottom: 1.5px solid #222;
+      margin-bottom: 1px;
+    }
+    .sig-label {
+      font-size: 0.78rem;
+      color: #222;
+      margin-top: 0;
+    }
+    .hologram {
+      width: 56px;
+      height: 29px;
+      background: repeating-linear-gradient(135deg, #d1e7dd 0 6px, #fff 6px 12px);
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-left: 3px;
+      box-shadow: 0 1px 2px rgba(30,124,50,0.15);
+      position: relative;
+    }
+    .hologram span {
+      color: #40a02b;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+    .holo-label {
+      font-size: 0.5rem;
+      color: #1e7c32;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-top: 0;
+    }
+    /* Footer */
+    .footer {
+      background: #f6f8fa;
+      padding: 7px 11px 5px 29px;
+      font-size: 0.85rem;
+      color: #1e7c32;
+      border-top: 2px solid #1e7c32;
+      z-index: 22;
+      position: relative;
+    }
+    .agency-contact {
+      margin-bottom: 3px;
+      font-size: 0.85rem;
+      color: #003300;
+      font-weight: 500;
+    }
+    .notice {
+      margin-bottom: 3px;
+      font-size: 0.78rem;
+      color: #b71c1c;
+      font-weight: 600;
+    }
+    .security-features {
+      font-size: 0.72rem;
+      color: #666;
+      font-style: italic;
+      margin-top: 1px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="id-card">
+    <!-- Microtext Borders -->
+    <div class="microtext microtext-top">NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria •</div>
+    <div class="microtext microtext-bottom">NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria •</div>
+    <div class="microtext microtext-left">NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria •</div>
+    <div class="microtext microtext-right">NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria • NDLEA • Nigeria •</div>
+    <!-- Watermark Emblem -->
+    <div class="watermark"></div>
+    <!-- Nigerian Flag Stripes -->
+    <div class="flag-stripes"></div>
+    <!-- Header -->
+    <div class="header">
+      <img src="ndlea_logo.png" alt="NDLEA Logo" class="logo">
+      <div class="header-text">
+        <span class="federal-republic">FEDERAL REPUBLIC OF NIGERIA</span>
+        <h1>NATIONAL DRUG LAW ENFORCEMENT AGENCY</h1>
+        <span class="id-type">OFFICER IDENTIFICATION CARD</span>
+      </div>
+    </div>
+    <!-- Body -->
+    <div class="body-section">
+      <div class="photo-box">
+        <img src="officer_photo.jpg" alt="Officer Photo" class="photo">
+        <img src="barcode_sample.png" alt="Officer Barcode" class="barcode">
+        <img src="qr_code.png" alt="Verification QR Code" class="qr">
+      </div>
+      <div class="details-box">
+        <table class="details-table">
+          <tr>
+            <td>Name:</td>
+            <td>VICTOR UCHENDU</td>
+          </tr>
+          <tr>
+            <td>Rank:</td>
+            <td>Assistant Superintendent of Narcotics I</td>
+          </tr>
+          <tr>
+            <td>ID Number:</td>
+            <td>NDLEA123456</td>
+          </tr>
+          <tr>
+            <td>Date Issued:</td>
+            <td>01/01/2022</td>
+          </tr>
+          <tr>
+            <td>Expiry Date:</td>
+            <td>31/12/2030</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <!-- Signatures and Hologram -->
+    <div class="signatures">
+      <div class="sig-box">
+        <div class="sig-line"></div>
+        <span class="sig-label">Officer's Signature</span>
+      </div>
+      <div class="sig-box">
+        <div class="sig-line"></div>
+        <span class="sig-label">Director General</span>
+      </div>
+      <div class="hologram">
+        <span>★</span>
+        <span class="holo-label">Hologram of NDLEA Emblem Here</span>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="footer">
+      <div class="agency-contact">
+        NDLEA HQ: 123 NDLEA Avenue, Abuja, Nigeria<br>
+        Tel: +234-800-123-4567 &nbsp; Email: info@ndlea.gov.ng
+      </div>
+      <div class="notice">
+        NOTICE: This card is the property of the National Drug Law Enforcement Agency.<br>
+        If found, please return to the nearest NDLEA office.<br>
+        WARNING: Unauthorized use, duplication, or possession of this card is a criminal offense.
+      </div>
+      <div class="security-features">
+        Security Features: Hologram | Microtext | Barcode | QR Code | Watermark
+      </div>
+    </div>
+  </div>
+</body>
+</html>
